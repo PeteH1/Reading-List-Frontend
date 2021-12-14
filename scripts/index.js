@@ -87,6 +87,16 @@ const getAllBooks = () => {
                 bookCover.src = `https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`;
                 bookBody.appendChild(bookCover);
 
+                const bookDelete = document.createElement("button");
+                bookDelete.innerText = "Remove";
+                bookDelete.classList.add("btn", "btn-danger");
+                bookDelete.addEventListener("click", () => {
+                    axios.delete(`http://localhost:8080/delete/${book.id}`)
+                        .then(res => getAllBooks())
+                        .catch(err => console.error(err))
+                });
+                bookBody.appendChild(bookDelete);
+
                 bookCard.appendChild(bookBody);
                 bookCol.appendChild(bookCard);
 
