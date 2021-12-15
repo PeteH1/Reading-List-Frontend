@@ -38,14 +38,38 @@
                     <label for="isbn" class="form-label">ISBN (for cover image):</label>
                     <input type="text" class="form-control" name="isbn" id="isbn">
 
-                    <button type="submit" class="btn btn-primary">Add</button>
+                    <button type="submit" class="btn btn-primary" id="addButton">Add</button>
                 </form>
             </div>
+            <div class="col">
+                <h2>Filter results</h2>
+                <form id="filterNameForm">
+                    <label for="filterByName" class="form-label">Name:</label>
+                    <input type="text" class="form-control" name="filterByName" id="filterByName">
+                    <button type="submit" class="btn btn-primary" id="filterNameBtn">Filter</button>
+                </form>
+                <form id="filterGenreForm">
+                    <label for="filterByGenre" class="form-label">Genre:</label>
+                    <input type="text" class="form-control" name="filterByGenre" id="filterByGenre">
+                    <button type="submit" class="btn btn-primary" id="filterGenreBtn">Filter</button>
+                </form>
+                <form id="filterFictionForm">
+                    <label for="filterByF" class="form-label">Fiction:</label>
+                    <input type="radio" class="radio-button" name="filterByF" id="filterByF">
+
+                    <label for="filterByNF" class="form-label">Non-Fiction:</label>
+                    <input type="radio" class="radio-button" name="filterByF" id="filterByNF">
+                    <br>
+                    <button type="submit" class="btn btn-primary" id="filterButton">Filter</button>
+                </form>
+                <button type="button" class="btn btn-secondary" id="clearButton">Clear filters</button>
+            </div>
+
         </section>
 
         <section class="row">
             <h2>Reading list:</h2>
-            <div id="getAllOutput" class="row row-cols-3">
+            <div id="getAllOutput" class="row row-cols-4">
 
             </div>
 
