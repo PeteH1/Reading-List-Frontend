@@ -1,54 +1,10 @@
 "use strict"
 
 const getAllOutput = document.querySelector("#getAllOutput");
+let bookIdCurrent = 0;
 
-// function createElement(type, attributes) {
-//     let element = document.createElement(type);
-//     for (let key in attributes) {
-//         if (key == "class") {
-//             // adds all classes at once
-//             element.classList.add.apply(element.classList, attributes[key]);
-//         } else {
-//             element[key] = attributes[key];
-//         }
-//     }
-//     someElement.appendChild(element);
-// }
-
-document.querySelector("#createForm").addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const form = this;
-
-    let fictionValue;
-
-    if (document.getElementById("fiction").checked) {
-        fictionValue = true;
-    } else if (document.getElementById("nonFiction").checked) {
-        fictionValue = false;
-    }
-
-    const data = {
-        name: form.bookName.value,
-        author: form.author.value,
-        isFiction: fictionValue,
-        genre: form.genre.value,
-        isbn: form.isbn.value
-    }
-
-    console.log("Form data:", data);
-
-    axios.post("http://localhost:8080/create", data)
-        .then(res => {
-            form.reset();
-            form.name.focus();
-            console.log(res);
-        })
-        .catch(err => console.error(err));
-})
-
-const getAllBooks = () => {
-    axios.get("http://localhost:8080/getAll")
+const getBooks = (link) => {
+    axios.get(link)
         .then(res => {
             console.log(res);
             const books = res.data;
@@ -87,15 +43,38 @@ const getAllBooks = () => {
                 bookCover.src = `https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`;
                 bookBody.appendChild(bookCover);
 
+                const buttonDiv = document.createElement("div");
+
                 const bookDelete = document.createElement("button");
-                bookDelete.innerText = "Remove";
+                bookDelete.innerText = "Delete";
                 bookDelete.classList.add("btn", "btn-danger");
                 bookDelete.addEventListener("click", () => {
                     axios.delete(`http://localhost:8080/delete/${book.id}`)
-                        .then(res => getAllBooks())
+                        .then(res => getBooks("http://localhost:8080/getAll"))
                         .catch(err => console.error(err))
                 });
-                bookBody.appendChild(bookDelete);
+                buttonDiv.appendChild(bookDelete);
+
+                bookBody.appendChild(buttonDiv);
+
+                const bookEdit = document.createElement("button");
+                bookEdit.innerText = "Edit";
+                bookEdit.classList.add("btn", "btn-secondary");
+                bookEdit.addEventListener("click", () => {
+                    document.querySelector("#bookName").value = book.name;
+                    document.querySelector("#author").value = book.author;
+                    document.querySelector("#genre").value = book.genre;
+                    document.querySelector("#isbn").value = book.isbn;
+                    if (book.isFiction == true) {
+                        document.querySelector("#fiction").checked = true;
+                    } else if (book.isFiction == false) {
+                        document.querySelector("#nonFiction").checked = true;
+                    }
+                    bookIdCurrent = book.id;
+                    window.scrollTo(0, 0);
+                });
+                buttonDiv.appendChild(bookEdit);
+
 
                 bookCard.appendChild(bookBody);
                 bookCol.appendChild(bookCard);
@@ -106,4 +85,112 @@ const getAllBooks = () => {
         .catch(err => console.error(err));
 }
 
-getAllBooks();
+document.querySelector("#createForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const form = this;
+
+    let fictionValue;
+
+    if (document.querySelector("#fiction").checked) {
+        fictionValue = true;
+    } else if (document.querySelector("#nonFiction").checked) {
+        fictionValue = false;
+    }
+
+    const data = {
+        name: form.bookName.value,
+        author: form.author.value,
+        isFiction: fictionValue,
+        genre: form.genre.value,
+        isbn: form.isbn.value
+    }
+
+    console.log("Create data:", data);
+
+    axios.post("http://localhost:8080/create", data)
+        .then(res => {
+            form.reset();
+            form.bookName.focus();
+            console.log(res);
+            getBooks("http://localhost:8080/getAll");
+        })
+        .catch(err => console.error(err));
+})
+
+document.querySelector("#editButton").addEventListener("click", function (event) {
+    event.preventDefault();
+
+    const form = document.querySelector("#createForm");
+
+    let fictionValue;
+
+    if (document.querySelector("#fiction").checked) {
+        fictionValue = true;
+    } else if (document.querySelector("#nonFiction").checked) {
+        fictionValue = false;
+    }
+
+    const data = {
+        name: form.bookName.value,
+        author: form.author.value,
+        isFiction: fictionValue,
+        genre: form.genre.value,
+        isbn: form.isbn.value
+    }
+
+    console.log("Update data:", data);
+
+    axios.put(`http://localhost:8080/update/${bookIdCurrent}`, data)
+        .then(res => {
+            form.reset();
+            form.bookName.focus();
+            console.log(res);
+            getBooks("http://localhost:8080/getAll");
+        })
+        .catch(err => console.error(err));
+})
+
+document.querySelector("#clearFormBtn").addEventListener("click", function (event) {
+    event.preventDefault();
+
+    document.querySelector("#createForm").reset();
+})
+
+document.querySelector("#filterNameForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    getBooks(`http://localhost:8080/findByName/${this.filterByName.value}`);
+})
+
+document.querySelector("#filterGenreForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    getBooks(`http://localhost:8080/findByGenre/${this.filterByGenre.value}`);
+})
+
+document.querySelector("#filterFictionForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    let bool;
+
+    if (document.getElementById("filterByF").checked) {
+        bool = true;
+    } else if (document.getElementById("filterByNF").checked) {
+        bool = false;
+    }
+
+    getBooks(`http://localhost:8080/findByFiction/${bool}`);
+})
+
+document.querySelector("#clearFilterBtn").addEventListener("click", function (event) {
+    event.preventDefault();
+
+    document.querySelector("#filterNameForm").reset();
+    document.querySelector("#filterGenreForm").reset();
+    document.querySelector("#filterFictionForm").reset();
+
+    getBooks("http://localhost:8080/getAll");
+})
+
+getBooks("http://localhost:8080/getAll");
