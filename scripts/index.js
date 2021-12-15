@@ -1,6 +1,7 @@
 "use strict"
 
 const getAllOutput = document.querySelector("#getAllOutput");
+let bookIdCurrent;
 
 // Create element function from stackoverflow
 // function createElement(type, attributes) {
@@ -56,15 +57,33 @@ const getBooks = (link) => {
                 bookCover.src = `https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`;
                 bookBody.appendChild(bookCover);
 
+                const buttonDiv = document.createElement("div");
+
                 const bookDelete = document.createElement("button");
-                bookDelete.innerText = "Remove";
+                bookDelete.innerText = "Delete";
                 bookDelete.classList.add("btn", "btn-danger");
                 bookDelete.addEventListener("click", () => {
                     axios.delete(`http://localhost:8080/delete/${book.id}`)
                         .then(res => getAllBooks())
                         .catch(err => console.error(err))
                 });
-                bookBody.appendChild(bookDelete);
+                buttonDiv.appendChild(bookDelete);
+
+                bookBody.appendChild(buttonDiv);
+
+                const bookEdit = document.createElement("button");
+                bookEdit.innerText = "Edit";
+                bookEdit.classList.add("btn", "btn-secondary");
+                bookEdit.addEventListener("click", () => {
+                    document.querySelector("#bookName").value = book.name;
+                    document.querySelector("#author").value = book.author;
+                    document.querySelector("#genre").value = book.genre;
+                    document.querySelector("#isbn").value = book.isbn;
+                    bookIdCurrent = book.id;
+                    window.scrollTo(0, 0);
+                });
+                buttonDiv.appendChild(bookEdit);
+
 
                 bookCard.appendChild(bookBody);
                 bookCol.appendChild(bookCard);
@@ -105,6 +124,15 @@ document.querySelector("#createForm").addEventListener("submit", function (event
             console.log(res);
         })
         .catch(err => console.error(err));
+})
+
+document.querySelector("#clearButton").addEventListener("click", function (event) {
+    event.preventDefault();
+
+    document.querySelector("#bookName").value = "";
+    document.querySelector("#author").value = "";
+    document.querySelector("#genre").value = "";
+    document.querySelector("#isbn").value = "";
 })
 
 document.querySelector("#filterNameForm").addEventListener("submit", function (event) {
