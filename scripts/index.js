@@ -1,21 +1,7 @@
 "use strict"
 
 const getAllOutput = document.querySelector("#getAllOutput");
-let bookIdCurrent;
-
-// Create element function from stackoverflow
-// function createElement(type, attributes) {
-//     let element = document.createElement(type);
-//     for (let key in attributes) {
-//         if (key == "class") {
-//             // adds all classes at once
-//             element.classList.add.apply(element.classList, attributes[key]);
-//         } else {
-//             element[key] = attributes[key];
-//         }
-//     }
-//     someElement.appendChild(element);
-// }
+let bookIdCurrent = 0;
 
 const getBooks = (link) => {
     axios.get(link)
@@ -64,7 +50,7 @@ const getBooks = (link) => {
                 bookDelete.classList.add("btn", "btn-danger");
                 bookDelete.addEventListener("click", () => {
                     axios.delete(`http://localhost:8080/delete/${book.id}`)
-                        .then(res => getAllBooks())
+                        .then(res => getBooks("http://localhost:8080/getAll"))
                         .catch(err => console.error(err))
                 });
                 buttonDiv.appendChild(bookDelete);
@@ -79,6 +65,11 @@ const getBooks = (link) => {
                     document.querySelector("#author").value = book.author;
                     document.querySelector("#genre").value = book.genre;
                     document.querySelector("#isbn").value = book.isbn;
+                    if (book.isFiction == true) {
+                        document.querySelector("#fiction").checked = true;
+                    } else if (book.isFiction == false) {
+                        document.querySelector("#nonFiction").checked = true;
+                    }
                     bookIdCurrent = book.id;
                     window.scrollTo(0, 0);
                 });
@@ -101,9 +92,9 @@ document.querySelector("#createForm").addEventListener("submit", function (event
 
     let fictionValue;
 
-    if (document.getElementById("fiction").checked) {
+    if (document.querySelector("#fiction").checked) {
         fictionValue = true;
-    } else if (document.getElementById("nonFiction").checked) {
+    } else if (document.querySelector("#nonFiction").checked) {
         fictionValue = false;
     }
 
@@ -115,24 +106,55 @@ document.querySelector("#createForm").addEventListener("submit", function (event
         isbn: form.isbn.value
     }
 
-    console.log("Form data:", data);
+    console.log("Create data:", data);
 
     axios.post("http://localhost:8080/create", data)
         .then(res => {
             form.reset();
-            form.name.focus();
+            form.bookName.focus();
             console.log(res);
+            getBooks("http://localhost:8080/getAll");
         })
         .catch(err => console.error(err));
 })
 
-document.querySelector("#clearButton").addEventListener("click", function (event) {
+document.querySelector("#editButton").addEventListener("click", function (event) {
     event.preventDefault();
 
-    document.querySelector("#bookName").value = "";
-    document.querySelector("#author").value = "";
-    document.querySelector("#genre").value = "";
-    document.querySelector("#isbn").value = "";
+    const form = document.querySelector("#createForm");
+
+    let fictionValue;
+
+    if (document.querySelector("#fiction").checked) {
+        fictionValue = true;
+    } else if (document.querySelector("#nonFiction").checked) {
+        fictionValue = false;
+    }
+
+    const data = {
+        name: form.bookName.value,
+        author: form.author.value,
+        isFiction: fictionValue,
+        genre: form.genre.value,
+        isbn: form.isbn.value
+    }
+
+    console.log("Update data:", data);
+
+    axios.put(`http://localhost:8080/update/${bookIdCurrent}`, data)
+        .then(res => {
+            form.reset();
+            form.bookName.focus();
+            console.log(res);
+            getBooks("http://localhost:8080/getAll");
+        })
+        .catch(err => console.error(err));
+})
+
+document.querySelector("#clearFormBtn").addEventListener("click", function (event) {
+    event.preventDefault();
+
+    document.querySelector("#createForm").reset();
 })
 
 document.querySelector("#filterNameForm").addEventListener("submit", function (event) {
@@ -161,7 +183,7 @@ document.querySelector("#filterFictionForm").addEventListener("submit", function
     getBooks(`http://localhost:8080/findByFiction/${bool}`);
 })
 
-document.querySelector("#clearButton").addEventListener("click", function (event) {
+document.querySelector("#clearFilterBtn").addEventListener("click", function (event) {
     event.preventDefault();
 
     document.querySelector("#filterNameForm").reset();
