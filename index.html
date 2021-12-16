@@ -5,11 +5,83 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Reading List</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"
+        integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Arvo">
+    <link rel="stylesheet" href="stylesheets/index.css">
 </head>
 
 <body>
+    <main class="container">
+        <h1 class="text-center"><b>Pete's Wonderful Reading List</b></h1>
+        <section class="row">
+            <div class="col">
+                <h2 class="text-center">Add or Edit a book</h2>
+                <form id="createForm">
+                    <label for="bookName" class="form-label">Title:</label>
+                    <input type="text" class="form-control" name="bookName" id="bookName">
 
+                    <label for="author" class="form-label">Author:</label>
+                    <input type="text" class="form-control" name="author" id="author"><br>
+
+                    <label for="fiction" class="form-label">Fiction:</label>
+                    <input type="radio" class="radio-button" name="fiction" id="fiction">
+
+                    <label for="nonFiction" class="form-label">Non-Fiction:</label>
+                    <input type="radio" class="radio-button" name="fiction" id="nonFiction"><br>
+
+                    <label for="genre" class="form-label">Genre:</label>
+                    <input type="text" class="form-control" name="genre" id="genre">
+
+                    <label for="isbn" class="form-label">ISBN (for cover image):</label>
+                    <input type="text" class="form-control" name="isbn" id="isbn">
+
+                    <button type="submit" class="btn btn-primary" id="addButton">Add</button>
+                    <button type="button" class="btn btn-warning" id="editButton">Submit Edit</button>
+                    <button type="reset" value="Reset" class="btn btn-secondary" id="clearFormBtn">Clear</button>
+                </form>
+            </div>
+            <div class="col">
+                <h2 class="text-center">Filter results</h2>
+                <form id="filterNameForm">
+                    <label for="filterByName" class="form-label">Title:</label>
+                    <input type="text" class="form-control" name="filterByName" id="filterByName">
+                    <button type="submit" class="btn btn-primary" id="filterNameBtn">Filter</button>
+                </form>
+                <form id="filterGenreForm">
+                    <label for="filterByGenre" class="form-label">Genre:</label>
+                    <input type="text" class="form-control" name="filterByGenre" id="filterByGenre">
+                    <button type="submit" class="btn btn-primary" id="filterGenreBtn">Filter</button>
+                </form>
+                <form id="filterFictionForm">
+                    <label for="filterByF" class="form-label">Fiction:</label>
+                    <input type="radio" class="radio-button" name="filterByF" id="filterByF">
+
+                    <label for="filterByNF" class="form-label">Non-Fiction:</label>
+                    <input type="radio" class="radio-button" name="filterByF" id="filterByNF">
+                    <br>
+                    <button type="submit" class="btn btn-primary" id="filterButton">Filter</button>
+                </form>
+                <button type="button" class="btn btn-secondary" id="clearFilterBtn">Clear filters</button>
+            </div>
+
+        </section>
+
+        <section class="row">
+            <h2 class="text-center"><b>Reading list</b></h2>
+            <div id="getAllOutput" class="row row-cols-2 row-cols-md-3 row-cols-xl-4">
+
+            </div>
+
+        </section>
+    </main>
+
+    <script src="scripts/index.js"></script>
 </body>
 
 </html>
