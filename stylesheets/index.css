@@ -1,8 +1,17 @@
 body {
     padding-top: 30px;
-    background-color: #FFEFBA;
+    background: linear-gradient(270deg, #ffefba, #fc9b78, #ffefba);
+    background-size: 400% 400%;
+
+    animation: BackgroundAnimation 30s ease infinite;
     font-family: "Arvo";
     color: #14234e;
+}
+
+@keyframes BackgroundAnimation {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
 }
 
 .card {
@@ -24,6 +33,7 @@ body {
 
 .btn-warning {
     background-color: #e49887;
+    
 }
 
 .form-control {
