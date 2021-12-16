@@ -14,7 +14,7 @@ const getBooks = (link) => {
                 bookCol.classList.add("col");
 
                 const bookCard = document.createElement("div");
-                bookCard.classList.add("card");
+                bookCard.classList.add("card", "shadow", "text-center");
 
                 const bookBody = document.createElement("div");
                 bookBody.classList.add("card-body");
@@ -40,6 +40,7 @@ const getBooks = (link) => {
                 bookBody.appendChild(bookGenre);
 
                 const bookCover = document.createElement("img");
+                bookCover.classList.add("img-fluid");
                 bookCover.src = `https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`;
                 bookBody.appendChild(bookCover);
 
@@ -49,9 +50,11 @@ const getBooks = (link) => {
                 bookDelete.innerText = "Delete";
                 bookDelete.classList.add("btn", "btn-danger");
                 bookDelete.addEventListener("click", () => {
-                    axios.delete(`http://localhost:8080/delete/${book.id}`)
-                        .then(res => getBooks("http://localhost:8080/getAll"))
-                        .catch(err => console.error(err))
+                    if (confirm("Are you sure you want to delete this book?")) {
+                        axios.delete(`http://localhost:8080/delete/${book.id}`)
+                            .then(res => getBooks("http://localhost:8080/getAll"))
+                            .catch(err => console.error(err))
+                    }
                 });
                 buttonDiv.appendChild(bookDelete);
 
@@ -59,7 +62,7 @@ const getBooks = (link) => {
 
                 const bookEdit = document.createElement("button");
                 bookEdit.innerText = "Edit";
-                bookEdit.classList.add("btn", "btn-secondary");
+                bookEdit.classList.add("btn", "btn-warning");
                 bookEdit.addEventListener("click", () => {
                     document.querySelector("#bookName").value = book.name;
                     document.querySelector("#author").value = book.author;
@@ -149,10 +152,13 @@ document.querySelector("#editButton").addEventListener("click", function (event)
             getBooks("http://localhost:8080/getAll");
         })
         .catch(err => console.error(err));
+
+    bookIdCurrent = 0;
 })
 
 document.querySelector("#clearFormBtn").addEventListener("click", function (event) {
     event.preventDefault();
+    bookIdCurrent = 0;
 
     document.querySelector("#createForm").reset();
 })
