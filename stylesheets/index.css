@@ -1,0 +1,49 @@
+body {
+    padding-top: 30px;
+    background: linear-gradient(270deg, #ffefba, #fc9b78, #ffefba);
+    background-size: 400% 400%;
+
+    animation: BackgroundAnimation 30s ease infinite;
+    font-family: "Arvo";
+    color: #14234e;
+}
+
+@keyframes BackgroundAnimation {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+.card {
+    margin-bottom: 10px;
+    background-color: #ffffffa2;
+}
+
+.btn {
+    margin: 5px;
+}
+
+.btn-primary {
+    background-color: #1a2d65;
+}
+
+.radio-button {
+    margin: 5px;
+}
+
+.btn-warning {
+    background-color: #e49887;
+    
+}
+
+.form-control {
+    background-color: #ffffffa2;
+}
+
+.btn-danger {
+    background-color: #ff0000;
+}
+
+.row {
+    margin-bottom: 10px;
+}
